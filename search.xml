@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>测试文章</title>
+    <url>/2026/06/27/test-post/</url>
+    <content><![CDATA[<p>这是一篇用于测试 GitHub Pages 发布流程的文章。</p>
+<p>如果你能在首页、归档页和搜索里看到它，就说明静态文件发布链路是通的。发布成功后可以删除这篇文章，或把它替换成正式内容。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>123</title>
     <url>/2021/02/13/newpapername/</url>
     <content><![CDATA[<p>123232</p>
