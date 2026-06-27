@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>转载阅读：Loop Engineering 概念解析、思考与实践</title>
+    <url>/2026/06/27/loop-engineering-reading/</url>
+    <content><![CDATA[<h2 id="copyright">转载说明</h2>
+      <p>本文为转载阅读记录，不是原文全文搬运。原文来自公众号「阿里技术」，标题为《Loop Engineering 概念解析、思考与实践》，发布时间为 2026-06-18。</p>
+      <p>原文地址：<a href="https://mp.weixin.qq.com/s/ael7aIEoomk4AU84E-mpGg" target="_blank" rel="noopener noreferrer">https://mp.weixin.qq.com/s/ael7aIEoomk4AU84E-mpGg</a></p>
+      <p>版权归原作者及原发布平台所有。这里仅保留阅读后的结构化摘要和个人理解，方便后续回看；如需完整内容，请访问原文。</p>
+
+      <h2 id="overview">文章主线</h2>
+      <p>这篇文章的核心不是再解释一遍 Agent 会调用工具，而是进一步讨论：既然 Agent 已经能完成长链条执行，那么能不能把“人不断补一句提示、再验一次结果、再让它继续改”的外层协作，也设计成一个自动循环。作者把这种思路概括为 Loop Engineering。</p>
+      <p>整篇文章基本分成四段：先区分底层 Agent Loop 和更高层的 Loop Engineering，再说明为什么大家开始关注这种“自动化验收闭环”，随后梳理一套六要素框架，最后讨论它的实践方式与边界条件。</p>
+
+      <h2 id="key-points">要点摘记</h2>
+      <p>第一，文章强调 Agent Loop 和 Loop Engineering 不是一回事。前者是 Agent 内部靠 Response、Function Call、工具结果回灌形成的执行循环，后者则是人在 Agent 之外设计的一套更高层流程，用来驱动开发、验证、反馈、修正不断重复，直到达到预设目标。</p>
+      <p>第二，Loop Engineering 想解决的是“人肉反复催模型”的问题。很多人现在用 AI Coding，本质上还是在频繁说“继续”“还是报错”“你改了啥”“回滚”，文章认为这些高频干预如果本身有明确标准，就可以被提前写进流程，让 Agent 主动完成验证和迭代。</p>
+      <p>第三，作者把这种思路描述为把 Human-in-the-Loop 尽量往外推。不是取消人，而是让人更多出现在目标设定和最终确认处，而不是每一轮都手动纠偏。前提是需求、测试集、验收条件要足够清楚，否则自动循环只会把偏差放大。</p>
+      <p>第四，文章总结了一个完整 Loop 的六个核心部分：Automations、Worktrees、Skills、Connectors 或 Plugins、Sub Agents、State。它们分别解决定时触发、并行隔离、能力复用、外部工具接入、角色分工和状态追踪这几类问题。</p>
+      <p>第五，文中对 Worktree 和 Sub Agent 的讨论很实用。并行 Agent 如果不隔离代码目录，很容易互相覆盖；验证类 Sub Agent 如果和实现类 Agent 混在一起，又容易变成自己给自己打分，所以需要通过工作区隔离和角色隔离来提高稳定性。</p>
+      <p>第六，文章认为 Skill 在 Loop Engineering 里不仅是可复用能力包，还可以在每轮循环里持续沉淀经验，逐步从静态说明演化成“活的知识”。这和单次 prompt 的差别在于，它会随着验证和修正不断累积有效做法。</p>
+      <p>第七，实践例子里作者用文本分类任务说明，Loop 不一定非得依赖复杂框架。只要把目标、验证和修正逻辑写清楚，Claude Code 或 Codex 这类工具就可以自己围绕准确率目标循环执行、修正并沉淀能力。</p>
+      <p>第八，文章最后专门提醒：Loop 不是银弹。它对需求定义、验证标准、成本意识和稳定性控制的要求更高。需求模糊时，传统的人在环路里多轮确认，反而可能比一上来全自动更稳。</p>
+
+      <h2 id="framework">六要素里我最认同的点</h2>
+      <p>我比较认同作者把 Loop Engineering 拆成六个部分，而不是把它神化成一个新名词。Automations 负责节奏，Worktrees 负责隔离，Skills 和 Connectors 负责能力，Sub Agents 负责分工，State 负责可追踪性。拆开看之后，它其实更像一套“自动化工程组合拳”。</p>
+      <p>另一个很重要的点是“外层闭环”。很多时候模型本身已经会写代码，真正拖慢效率的是写完之后那一长串来回确认、修补和验证。如果这一层能部分程序化，才算真正把 Agent 从工具升级成可持续运行的系统。</p>
+
+      <h2 id="personal-notes">个人理解</h2>
+      <p>我觉得这篇文章最有价值的地方，是它把“提一个需求”往前推进成“定义一套闭环流程”。这和普通 prompt engineering 的差别，不是文风更复杂，而是你开始思考触发条件、验收标准、失败重试、状态记录和角色分工。</p>
+      <p>放到个人工作流里，这个思路也挺实用：固定、确定、可复现的流程，优先写脚本；需要模型动态判断但又有明确标准的流程，适合写成 skill 或 loop；需求还很模糊、验证标准也说不清时，就别硬上全自动。先把流程讲明白，比把 Loop 造得很酷更重要。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>转载阅读：去哪儿网 AI Coding 研发平台实践</title>
     <url>/2026/06/27/qunar-ai-coding-platform-reading/</url>
     <content><![CDATA[<h2 id="copyright">转载说明</h2>
