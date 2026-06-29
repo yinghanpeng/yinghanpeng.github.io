@@ -7,6 +7,22 @@ window.BLOG_DATA = {
   },
   "posts": [
     {
+      "title": "AI 核心概念十图速览",
+      "url": "/2026/06/29/ai-concepts-gallery/",
+      "date": "2026-06-29",
+      "datetime": "2026-06-29T21:30:00+08:00",
+      "updated": "2026-06-29",
+      "updatedDatetime": "2026-06-29T21:30:00+08:00",
+      "summary": "整理了 10 张 AI 核心概念图，包括 MCP、RAG、Function Calling、Memory、Planning、Workflow vs Agent 等，适合做一篇集中回看和分享用的图文笔记。",
+      "tags": [
+        "AI",
+        "知识图谱",
+        "Agent"
+      ],
+      "minutes": 4,
+      "contentHtml": "<h2 id=\"overview\">这篇内容放什么</h2>\n      <p>把这 10 张图集中整理成一篇博客，方便后面统一回看、转发和收藏。内容覆盖了 AI Agent 常见的一组核心概念：MCP、RAG、Function Calling、Context Engineering、Memory、Planning、Workflow vs Agent、Multi-Agent、Model Architecture 和 Reinforcement Learning。</p>\n      <p>这些图本身已经很完整，所以正文不额外展开大段解释，主要保留一个清晰的浏览顺序。后面如果你想，我也可以继续把这篇扩成“每张图配一段自己的理解”的版本。</p>\n\n      <h2 id=\"gallery\">十张图</h2>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/mcp.jpg\" alt=\"一张图讲懂 MCP\">\n        <figcaption>1. MCP（Model Context Protocol）：让 AI 以标准方式连接工具、数据和外部系统。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/rag.jpg\" alt=\"一张图讲懂 RAG\">\n        <figcaption>2. RAG（Retrieval-Augmented Generation）：先检索，再增强上下文，最后生成回答。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/function-calling.jpg\" alt=\"一张图讲懂 Function Calling\">\n        <figcaption>3. Function Calling / Tool Calling：让模型从“会说”走向“会做”。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/context-engineering.jpg\" alt=\"一张图讲懂 Context Engineering\">\n        <figcaption>4. Context Engineering：把真正相关、准确、结构化的信息放进上下文。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/memory.jpg\" alt=\"一张图讲懂 Memory\">\n        <figcaption>5. Memory（记忆系统）：让 AI 记住过去，理解现在，辅助未来。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/planning.jpg\" alt=\"一张图讲懂 Planning\">\n        <figcaption>6. Planning（规划）：先拆解目标，再决定执行路径和资源分配。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/workflow-vs-agent.jpg\" alt=\"一张图讲懂 Workflow vs Agent\">\n        <figcaption>7. Workflow vs Agent：什么时候适合固定流程，什么时候适合自主决策。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/multi-agent.jpg\" alt=\"一张图讲懂 Multi-Agent\">\n        <figcaption>8. Multi-Agent（多智能体）：多个角色协作完成复杂任务。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/model-architecture.jpg\" alt=\"一张图讲懂 Model Architecture\">\n        <figcaption>9. Model Architecture（模型架构）：理解 Transformer、MoE 和大模型能力边界。</figcaption>\n      </figure>\n      <figure>\n        <img src=\"/images/posts/ai-concepts/reinforcement-learning.jpg\" alt=\"一张图讲懂 Reinforcement Learning\">\n        <figcaption>10. Reinforcement Learning（强化学习）：通过试错与反馈不断优化策略。</figcaption>\n      </figure>\n\n      <h2 id=\"closing\">一句收尾</h2>\n      <p>如果把这组图连起来看，其实刚好能串出一条从模型基础能力到 Agent 工程化落地的主线：模型架构决定底座，强化学习影响行为优化，RAG、Memory 和 Context Engineering 提供知识与上下文，Function Calling 和 MCP 打通外部能力，Planning、Workflow、Agent 和 Multi-Agent 决定任务怎么真正跑起来。</p>"
+    },
+    {
       "title": "转载阅读：Loop Engineering 概念解析、思考与实践",
       "url": "/2026/06/27/loop-engineering-reading/",
       "date": "2026-06-27",
