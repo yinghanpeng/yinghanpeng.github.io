@@ -7,6 +7,22 @@ window.BLOG_DATA = {
   },
   "posts": [
     {
+      "title": "在外网发现的一篇很好的 AI ENGINEERING PDF,内容见附件",
+      "url": "/2026/07/15/ai-engineering-pdf-note/",
+      "date": "2026-07-15",
+      "datetime": "2026-07-15T21:45:00+08:00",
+      "updated": "2026-07-15",
+      "updatedDatetime": "2026-07-15T21:45:00+08:00",
+      "summary": "记录一份在外网发现的 AI Engineering Guidebook PDF，并附上原始附件文件，方便后续直接打开阅读。",
+      "tags": [
+        "AI Engineering",
+        "PDF",
+        "资料收藏"
+      ],
+      "minutes": 1,
+      "contentHtml": "<h2 id=\"attachment\">附件说明</h2>\n      <p>在外网发现了一份很不错的 <strong>AI Engineering</strong> 资料，这里先存一份到博客里，方便后面直接打开查看。</p>\n      <p>附件文件：<a href=\"/files/pdf/ai-engineering-guidebook.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">AI Engineering Guidebook.pdf</a></p>\n      <p>文件信息：384 页，PDF 文档。</p>\n\n      <h2 id=\"usage\">打开方式</h2>\n      <p>可以直接点击上面的链接在线打开，也可以在浏览器里另存后离线阅读。</p>"
+    },
+    {
       "title": "转载阅读：Harness 工程之道，Skill 原理与最佳实践",
       "url": "/2026/07/01/skill-engineering-reading/",
       "date": "2026-07-01",
