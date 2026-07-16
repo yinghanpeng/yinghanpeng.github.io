@@ -116,9 +116,9 @@
             <h1 id="home-title">最新文章</h1>
             <p>少一点装饰，多一点可读性。这里显示全部 ${posts.length} 篇文章，并与归档数据保持一致。</p>
           </div>
-          <div class="inline-actions">
-            <a class="button" href="/archives/">查看归档</a>
-            <button class="button primary" type="button" data-action="open-search">搜索文章</button>
+          <div class="inline-actions section-actions" aria-label="文章工具">
+            <a class="button" href="/archives/">归档</a>
+            <button class="button primary" type="button" data-action="open-search">搜索</button>
           </div>
         </div>
 
@@ -180,9 +180,9 @@
             <h1 id="archive-title">${escapeHtml(archiveTitle(filtered.length))}</h1>
             <p>${escapeHtml(archiveDescription(filtered.length))}</p>
           </div>
-          <div class="inline-actions">
+          <div class="inline-actions section-actions" aria-label="归档工具">
             ${archiveYear ? '<a class="button" href="/archives/">全部归档</a>' : ''}
-            <button class="button primary" type="button" data-action="open-search">搜索文章</button>
+            <button class="button primary" type="button" data-action="open-search">搜索</button>
           </div>
         </div>
 
@@ -307,9 +307,9 @@
           </div>
 
           <nav class="site-nav" aria-label="主导航">
-            <a class="nav-link" href="/" ${activeNav('home') ? 'aria-current="page"' : ''}>首页 <span class="nav-kbd">${posts.length}</span></a>
-            <a class="nav-link" href="/archives/" ${activeNav('archives') ? 'aria-current="page"' : ''}>归档 <span class="nav-kbd">${years.length}</span></a>
-            <button class="nav-link" type="button" data-action="open-search">搜索 <span class="nav-kbd">/</span></button>
+            <a class="nav-link" href="/" ${activeNav('home') ? 'aria-current="page"' : ''}>首页</a>
+            <a class="nav-link" href="/archives/" ${activeNav('archives') ? 'aria-current="page"' : ''}>归档</a>
+            <button class="nav-link" type="button" data-action="open-search">搜索</button>
           </nav>
 
           <div class="stat-row">
