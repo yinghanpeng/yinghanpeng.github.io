@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -435,8 +435,16 @@ posts.sort((a, b) => b.date.localeCompare(a.date));
 
 const years = [...new Set(posts.map((post) => post.date.slice(0, 4)))];
 const months = [...new Set(posts.map((post) => post.date.slice(0, 7)))];
-const assetVersion = posts
-  .map((post) => [post.url, post.date, post.updated, post.title].join('|'))
+const assetSources = await Promise.all([
+  readFile(join(root, 'css/redesign.css'), 'utf8'),
+  readFile(join(root, 'js/redesign.js'), 'utf8')
+]);
+const assetVersion = [
+  posts
+    .map((post) => [post.url, post.date, post.updated, post.title].join('|'))
+    .join('||'),
+  ...assetSources
+]
   .join('||')
   .split('')
   .reduce((hash, char) => ((hash * 33) + char.charCodeAt(0)) >>> 0, 5381)
