@@ -435,6 +435,12 @@ posts.sort((a, b) => b.date.localeCompare(a.date));
 
 const years = [...new Set(posts.map((post) => post.date.slice(0, 4)))];
 const months = [...new Set(posts.map((post) => post.date.slice(0, 7)))];
+const assetVersion = posts
+  .map((post) => [post.url, post.date, post.updated, post.title].join('|'))
+  .join('||')
+  .split('')
+  .reduce((hash, char) => ((hash * 33) + char.charCodeAt(0)) >>> 0, 5381)
+  .toString(36);
 
 const routes = [
   {
@@ -527,9 +533,9 @@ function pageTemplate(route) {
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="stylesheet" href="/css/redesign.css">
-  <script src="/js/redesign-data.js" defer></script>
-  <script src="/js/redesign.js" defer></script>
+  <link rel="stylesheet" href="/css/redesign.css?v=${assetVersion}">
+  <script src="/js/redesign-data.js?v=${assetVersion}" defer></script>
+  <script src="/js/redesign.js?v=${assetVersion}" defer></script>
   <title>${escapeHtml(route.title)}</title>
 </head>
 <body ${routeAttrs(route)}>
