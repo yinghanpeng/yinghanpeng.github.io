@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#101310">
+  <title>博客管理台</title>
+  <link rel="stylesheet" href="/admin-assets/styles.css">
+  <script src="/admin-assets/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">Z</div>
+      <div>
+        <h1>博客管理台</h1>
+        <p>yinghanpeng.github.io</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span class="repo-status" id="repo-status">正在读取仓库状态</span>
+      <button class="button" id="generate-button" type="button">重新生成</button>
+      <button class="button primary" id="publish-button" type="button">发布到 GitHub</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="collection-panel">
+      <div class="collection-head">
+        <div class="panel-title-row">
+          <h2>文章</h2>
+          <span id="post-count">0</span>
+        </div>
+        <div class="collection-actions">
+          <label class="search-field">
+            <span class="sr-only">搜索文章</span>
+            <input id="post-search" type="search" placeholder="搜索标题、标签、日期" autocomplete="off">
+          </label>
+          <button class="icon-button" id="new-post-button" type="button" title="新建文章" aria-label="新建文章">+</button>
+        </div>
+      </div>
+      <div class="post-list" id="post-list" aria-live="polite"></div>
+      <div class="collection-foot">
+        <a href="https://yinghanpeng.github.io/" target="_blank" rel="noopener noreferrer">打开线上博客 ↗</a>
+        <button id="refresh-button" type="button">刷新</button>
+      </div>
+    </aside>
+
+    <section class="welcome-panel" id="welcome-panel">
+      <div class="welcome-copy">
+        <span class="welcome-index">13</span>
+        <h2>选择一篇文章</h2>
+        <p>或点击左侧加号新建文章。</p>
+      </div>
+    </section>
+
+    <form class="editor-shell is-hidden" id="editor-form">
+      <section class="editor-main">
+        <header class="editor-head">
+          <div class="editor-title-wrap">
+            <span class="eyebrow" id="editor-mode">MARKDOWN</span>
+            <input class="title-input" id="title-input" name="title" type="text" placeholder="文章标题" required>
+          </div>
+          <div class="editor-head-actions">
+            <span class="save-state" id="save-state">已保存</span>
+            <button class="button" id="preview-button" type="button">预览</button>
+          </div>
+        </header>
+        <div class="content-toolbar">
+          <span>正文</span>
+          <span id="content-stats">0 字符</span>
+        </div>
+        <label class="content-field">
+          <span class="sr-only">文章正文</span>
+          <textarea id="content-input" name="content" spellcheck="false"></textarea>
+        </label>
+      </section>
+
+      <aside class="inspector-panel">
+        <div class="inspector-scroll">
+          <section class="field-section">
+            <h2>发布信息</h2>
+            <div class="field-grid two-columns">
+              <label class="field">
+                <span>发布日期</span>
+                <input id="date-input" name="date" type="date" required>
+              </label>
+              <label class="field">
+                <span>时间</span>
+                <input id="time-input" name="time" type="time" required>
+              </label>
+              <label class="field">
+                <span>更新日期</span>
+                <input id="updated-input" name="updated" type="date" required>
+              </label>
+              <label class="field">
+                <span>更新时间</span>
+                <input id="updated-time-input" name="updatedTime" type="time" required>
+              </label>
+            </div>
+          </section>
+
+          <section class="field-section">
+            <h2>文章地址</h2>
+            <label class="field">
+              <span>Slug</span>
+              <input id="slug-input" name="slug" type="text" pattern="[a-z0-9-]+" required>
+            </label>
+            <p class="url-preview" id="url-preview">/</p>
+          </section>
+
+          <section class="field-section">
+            <h2>摘要与分类</h2>
+            <label class="field">
+              <span>摘要</span>
+              <textarea class="summary-input" id="summary-input" name="summary" rows="5"></textarea>
+            </label>
+            <label class="field">
+              <span>标签</span>
+              <input id="tags-input" name="tags" type="text" placeholder="LangGraph, 学习笔记">
+            </label>
+            <label class="field compact-field">
+              <span>阅读分钟</span>
+              <input id="minutes-input" name="minutes" type="number" min="1" max="999" required>
+            </label>
+          </section>
+
+          <section class="field-section source-section">
+            <h2>内容来源</h2>
+            <p id="source-path">内嵌 HTML</p>
+          </section>
+        </div>
+
+        <footer class="editor-actions">
+          <button class="danger-button" id="delete-button" type="button">删除</button>
+          <button class="button primary save-button" id="save-button" type="submit">保存文章</button>
+        </footer>
+      </aside>
+    </form>
+  </main>
+
+  <aside class="preview-drawer" id="preview-drawer" aria-hidden="true">
+    <header>
+      <div>
+        <span>本地预览</span>
+        <strong id="preview-title"></strong>
+      </div>
+      <button class="icon-button" id="close-preview-button" type="button" title="关闭预览" aria-label="关闭预览">×</button>
+    </header>
+    <iframe id="preview-frame" title="文章本地预览"></iframe>
+  </aside>
+  <button class="drawer-scrim" id="preview-scrim" type="button" aria-label="关闭预览"></button>
+
+  <dialog id="delete-dialog">
+    <form method="dialog" class="dialog-body">
+      <div class="dialog-icon danger">!</div>
+      <h2>删除这篇文章？</h2>
+      <p id="delete-message"></p>
+      <div class="dialog-actions">
+        <button class="button" value="cancel">取消</button>
+        <button class="danger-button solid" id="confirm-delete-button" value="default">确认删除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="publish-dialog">
+    <form method="dialog" class="dialog-body publish-dialog-body">
+      <div class="dialog-icon">↗</div>
+      <h2>发布到 GitHub</h2>
+      <label class="field">
+        <span>提交说明</span>
+        <input id="commit-message-input" type="text" value="Update blog posts">
+      </label>
+      <div class="publish-summary" id="publish-summary"></div>
+      <div class="dialog-actions">
+        <button class="button" value="cancel">取消</button>
+        <button class="button primary" id="confirm-publish-button" value="default">生成并发布</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="busy-layer" id="busy-layer" aria-hidden="true">
+    <div class="busy-indicator"></div>
+    <span id="busy-message">处理中</span>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
