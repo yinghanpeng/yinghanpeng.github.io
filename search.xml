@@ -244,6 +244,96 @@
 ]]></content>
   </entry>
   <entry>
+    <title>langgraph学习笔记</title>
+    <url>/2025/05/13/langgraph-study-notes/</url>
+    <content><![CDATA[<h2 id="overview">写在前面</h2>
+      <p>这篇文章把几份 <strong>LangGraph</strong> 学习笔记整理到一起，按一个更连续的顺序重新梳理，方便后面统一回看。内容主要覆盖五个部分：LangGraph 的基础定位、图结构与控制流、持久化和可恢复执行、中断与人在环，以及流式执行。</p>
+      <p>如果只是想快速知道 LangGraph 适合做什么，可以先记一句话：<strong>LangChain 更偏高层 Agent 开发入口，LangGraph 更偏底层编排框架和 Agent Runtime</strong>。当任务需要明确状态、复杂分支、长时间运行、中断恢复或人工介入时，LangGraph 的价值会变得非常明显。</p>
+
+      <h2 id="positioning">1. LangGraph 的定位</h2>
+      <p>从学习体验上看，LangChain 1.x 更像面向应用开发者的高层框架，入口通常是 <code>create_agent</code>；而 LangGraph 更像一层执行运行时，负责把节点、状态和边组织成一个真正可执行、可持久化、可恢复的图。</p>
+      <p>两者不是替代关系。更自然的理解是：LangChain 提供更好用的 Agent 抽象，LangGraph 提供更细粒度的流程控制能力。对于普通问答、工具调用或结构比较直接的 Agent，LangChain 往往已经够用；但一旦进入复杂工作流、任务拆解、审批、中断恢复、长期运行这些场景，LangGraph 会更合适。</p>
+      <p>这一层定位差异也解释了为什么很多 Agent 框架最终都会往运行时能力靠拢。真正难的不是让模型输出一段文字，而是让一个任务在复杂条件下稳定地跑完整个流程。</p>
+
+      <h2 id="graph-basics">2. 图的基本组成</h2>
+      <p>LangGraph 的核心抽象并不复杂，主要就是三个词：<strong>State、Node、Edge</strong>。</p>
+      <p><strong>State</strong> 是共享状态，承载图运行过程中的上下文、中间结果和后续节点要消费的数据。<strong>Node</strong> 是执行单元，通常就是一个函数，负责读取当前状态并返回局部更新。<strong>Edge</strong> 则定义节点之间如何流转，既可以是固定顺序，也可以根据状态动态决定下一步。</p>
+      <p>如果用最简单的话描述，一个 LangGraph 程序本质上是在回答三件事：<strong>当前有哪些状态、每个节点做什么、执行完以后往哪里走</strong>。</p>
+
+      <h2 id="superstep">3. 图是怎么运行起来的</h2>
+      <p>LangGraph 的底层运行思想借鉴了 Pregel 模型，执行单位通常可以理解成一轮一轮推进的 <strong>Superstep</strong>。每一轮大致会经历三个阶段：先根据当前状态和边关系做计划，决定哪些节点应该被触发；再执行这一轮被激活的节点；最后把所有节点返回的局部更新统一合并进状态，形成新的状态快照，供下一轮继续使用。</p>
+      <p>这个执行模型有两个很重要的含义。第一，节点只返回“我这一步产生了什么变化”，而不是直接粗暴改全局对象。第二，并行节点通常基于同一轮开始时的状态快照计算，中间结果会在本轮结束后统一提交。这让复杂工作流的行为更稳定，也更容易解释。</p>
+
+      <h2 id="graph-api-vs-functional-api">4. Graph API 与 Functional API</h2>
+      <p>LangGraph 提供两套主要写法。<strong>Graph API</strong> 是显式声明 State、Node 和 Edge 的图式写法，适合复杂流程、可视化需求、多条件分支和长期维护。<strong>Functional API</strong> 则更接近普通 Python 函数流程，用 <code>@entrypoint</code> 和 <code>@task</code> 组织执行，更适合已有过程式代码做轻量改造。</p>
+      <p>如果是从零开始学习，我更倾向于先把 Graph API 吃透。因为它最直接地暴露了 LangGraph 的核心思维方式：状态如何流动、节点如何被调度、边如何决定流程。等这套心智模型清楚之后，再看 Functional API 会轻松很多。</p>
+
+      <h2 id="build-first-graph">5. 一个最小可运行图</h2>
+      <p>构建一个最小图的步骤很固定：先定义全局状态，再创建 <code>StateGraph</code>，然后声明节点、添加节点、连接边，最后调用 <code>compile()</code> 得到可执行图。</p>
+      <pre><code>class OverAllState(TypedDict):
+    logs: list[str]
+    cur_id: str
+
+builder = StateGraph(state_schema=OverAllState)
+builder.add_node("node_1", node_1)
+builder.add_node("node_2", node_2)
+builder.add_edge(START, "node_1")
+builder.add_edge("node_1", "node_2")
+builder.add_edge("node_2", END)
+
+graph = builder.compile()</code></pre>
+      <p>这类最小示例看起来朴素，但非常适合用来理解整个运行时的行为。尤其是当后面引入条件分支、并行执行、检查点和中断时，你会发现所有复杂能力其实都是在这个骨架上叠加出来的。</p>
+
+      <h2 id="control-flow">6. 控制流：顺序、分支与结束语义</h2>
+      <p>在控制流层面，最基础的接口是 <code>add_edge</code>。只要会连边，就能搭出顺序执行、分支和循环。对于简单线性流程，也可以使用 <code>add_sequence</code>，它会自动把一串节点按顺序连起来。</p>
+      <p>一个很容易被忽略的细节是，<code>END</code> 更像终止语义，而不是真正执行的普通节点。也就是说，某些简单流程里，就算不显式连到 <code>END</code>，只要最后没有后续节点被触发，图也会自然结束。但为了可读性和维护性，显式写出终点通常还是更清楚。</p>
+      <p>相对地，<code>START</code> 往往不能省略。因为它不只是一个标签，而是真正告诉运行时“从哪里开始调度”的入口。</p>
+
+      <h2 id="persistence">7. 持久化与可恢复执行</h2>
+      <p>这一部分是 LangGraph 和很多普通工作流封装相比最有辨识度的地方。所谓 <strong>Durable Execution</strong>，本质上就是在执行过程中保存关键状态，使任务在中断、失败或等待外部输入后可以继续运行，而不是从头再来。</p>
+      <p>LangGraph 的持久化体系围绕几个关键词展开：<strong>Checkpoint</strong> 负责保存状态快照，<strong>Checkpointer</strong> 负责把这些检查点落到某个后端里，<strong>thread_id</strong> 用于区分不同会话或执行线，开发者平时看到的则通常是基于检查点封装出来的 <strong>StateSnapshot</strong> 视图。</p>
+      <p>最常见的启用方式有两步：编译图时传入一个检查点存储器；调用图时提供带有 <code>thread_id</code> 的配置对象。这样同一个线程里的多次调用就会共享一条持久化执行线。</p>
+      <pre><code>checkpointer = InMemorySaver()
+graph = builder.compile(checkpointer=checkpointer)
+
+config = {"configurable": {"thread_id": "demo-thread"}}
+graph.invoke(inputs, config=config)</code></pre>
+      <p>开发和学习阶段，<code>InMemorySaver</code> 基本够用；真正需要跨进程、跨服务保存状态时，再换成 SQLite、PostgreSQL、MongoDB 或 Redis 这类后端实现。理解上可以抓住一句话：<strong>Persistence 是基础，Durable Execution 是建立在它之上的运行能力</strong>。</p>
+
+      <h2 id="durable-scenarios">8. 可恢复执行适合什么场景</h2>
+      <p>从实际应用看，持久化和可恢复执行至少支持四类典型能力：多轮会话共享历史、中断后恢复、失败后继续、以及基于历史检查点做 time travel、回放和分叉。这些能力叠在一起之后，LangGraph 才不只是“一个会调用函数的图”，而更像真正的任务运行时。</p>
+      <p>这对于 Agent 系统尤其关键。因为一旦任务链路变长，任何一步失败、等待审批或需要补充输入，都不应该逼着系统从第一步重做。否则模型再聪明，系统级体验也会非常差。</p>
+
+      <h2 id="interrupt">9. 中断机制与 Human-in-the-Loop</h2>
+      <p>LangGraph 提供了两类中断。<strong>动态中断</strong> 通过在节点里调用 <code>interrupt()</code> 实现，是业务逻辑的一部分；<strong>静态中断</strong> 则通过 <code>interrupt_before</code> 和 <code>interrupt_after</code> 这类参数在运行前设置，更偏调试用途。</p>
+      <p>动态中断非常适合实现人在环。图执行到某个位置时先暂停，把需要人类确认的信息暴露给调用方；等用户给出反馈后，再通过 <code>Command(resume=...)</code> 把结果送回图里继续执行。恢复后，传给 <code>resume</code> 的内容会作为 <code>interrupt()</code> 的返回值参与后续逻辑。</p>
+      <pre><code>def approve_node(state):
+    decision = interrupt("是否同意继续执行？")
+    return {"approved": decision}
+
+resume_res = graph.invoke(Command(resume=True), config=config)</code></pre>
+      <p>在学习笔记里，这部分还整理了几种常见模式，比如基础 HITL、并行中断、审批模式、审核编辑模式、工具执行前审批、单节点串行中断以及人类输入校验。它们背后其实是同一件事：<strong>让图在关键时刻停下来，并且能在拿到外部反馈后有状态地继续跑</strong>。</p>
+
+      <h2 id="streaming">10. 流式执行</h2>
+      <p>除了最终 <code>invoke</code> 一次性返回结果，LangGraph 还支持在执行过程中持续吐出状态变化和事件，这就是流式执行。同步场景用 <code>stream()</code>，异步场景用 <code>astream()</code>，两者的语义基本一致。</p>
+      <p>流式输出的关键在于 <code>stream_mode</code>。常见模式包括：<code>values</code> 输出每个超步后的完整状态，<code>updates</code> 输出节点产生的增量更新，<code>messages</code> 输出消息流式增量，<code>checkpoints</code> 用于观察检查点，<code>tasks</code> 用于追踪任务级事件，<code>debug</code> 偏调试封装，<code>custom</code> 则允许节点主动写自定义事件。</p>
+      <pre><code>for chunk in graph.stream(
+    {"initial_state": "初始状态"},
+    stream_mode=["values", "updates"],
+):
+    print(chunk)</code></pre>
+      <p>这套能力在产品侧很有用。因为很多时候我们并不只想要最终答案，而是想知道任务跑到哪一步、哪些节点已经完成、状态是否更新、模型有没有开始输出、检查点有没有保存成功。流式执行让这些过程变得可观测。</p>
+
+      <h2 id="learning-route">11. 我的学习顺序建议</h2>
+      <p>如果是刚接触 LangGraph，我会建议按下面这个顺序学：先从最小图理解 State、Node、Edge 和 Superstep；再看控制流，把顺序、条件分支和循环跑明白；然后再进持久化和 <code>thread_id</code>；理解这些之后，再去看中断恢复、人在环和流式执行。</p>
+      <p>换句话说，不要一上来就扑到最炫的 Agent Demo 上。LangGraph 真正值得学的，不是“图能不能跑”，而是它为什么能在复杂场景里跑得更稳、更可控、更可恢复。</p>
+
+      <h2 id="closing">12. 小结</h2>
+      <p>回看这几份笔记，LangGraph 最打动我的地方不是语法，而是它把 Agent 系统里那些经常被忽略的运行时问题摆到了台面上：状态怎么共享、流程怎么显式表达、异常怎么恢复、人工怎么介入、执行过程怎么观测。这些问题一旦开始认真处理，Agent 才真正从“会回答”变成“能稳定做事”。</p>
+      <p>所以如果把 LangChain 看成一个更友好的 Agent 开发入口，那 LangGraph 更像是让这些 Agent 具备工程韧性的底层骨架。等基础打牢之后，再回头看更复杂的多 Agent、工作流编排和 Harness 设计，会顺很多。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>123</title>
     <url>/2021/02/13/newpapername/</url>
     <content><![CDATA[<p>123232</p>
