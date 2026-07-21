@@ -30,10 +30,65 @@
 <h3 id="每轮会话提取">每轮会话提取</h3>
 <p>每轮会话后台 fork 子代理 <code>extractMemories</code> 提取记忆、主代理手动写记忆时子代理跳过避免冲突、子代理读写分离两回合策略、工具权限沙箱限制，源码完全实现。</p>
 <h2 id="摘要记忆-session-memory">摘要记忆（Session Memory）</h2>
-<p>不等到上下文爆 Token 再临时生成摘要，全程后台维护 <code>sessionmemory.md</code> 会话笔记，压缩时直接复用；压缩边界算法保证 tool-use/tool result 成对完整、不破坏流式 thinking 片段，是源码解决 API 报错的核心方案，描述精准。</p>
-<h2 id="休眠重塑记忆-autodream-自动做梦">休眠重塑记忆（AutoDream 自动做梦）</h2>
-<h3 id="双重触发门控">双重触发门控</h3>
-<p>间隔 24h + 累计 5 次新会话，缺一不启动。</p>
+<p>对话持续进行时，系统启动独立后台子 Agent，持续维护一份结构化文件 sessionmemory.md。</p>
+<p>当 Token 到达阈值，系统丢弃早期老旧聊天记录，直接把提前写好的 sessionmemory.md 放进上下文，不需要临时生成摘要，信息完整性更高。</p>
+<p>压缩边界智能算法：
+calculateMessageToKeepIndex 算法自动计算：
+不能随便一刀切断历史。</p>
+<p>calculateMessageToKeepIndex内部核心执行逻辑（源码逻辑）</p>
+<ol>
+<li>
+<p>基线计算
+统计当前全部消息总 Token；设定目标区间：保留消息 Token 不得低于最小值、不超过最大预算。先初步算出一个理论切割位置。</p>
+</li>
+<li>
+<p>边界修正（最关键逻辑）
+从初步切割点向后 / 向前滑动查找：</p>
+</li>
+</ol>
+<ul>
+<li>不能拆分 tool_use ↔ tool_result 配对；</li>
+<li>不能切断连续的 thinking 思考片段；</li>
+<li>保证切割边界落在完整的消息分组间隙。</li>
+</ul>
+<ol start="3">
+<li>约束兜底</li>
+</ol>
+<ul>
+<li>不能回退到上一轮压缩边界之前（防止无限保留历史、持续膨胀）；</li>
+<li>保证新产生的任务交互有足够上下文空间。</li>
+</ul>
+<ol start="4">
+<li>输出结果 keepIndex
+所有下标≥keepIndex 的消息保留；小于 keepIndex 的旧消息丢弃，并用 sessionmemory.md 会话笔记替代被删掉的历史。</li>
+</ol>
+<h2 id="休眠重塑记忆-autodream">休眠重塑记忆（AutoDream）</h2>
+<h3 id="1-双重触发门槛">1. 双重触发门槛</h3>
+<p>两个条件必须同时满足
+① 距离上一次整理，间隔 ≥ 24 小时
+② 这段时间累计产生至少 5 次新对话
+避免频繁整理消耗资源。</p>
+<h3 id="2-标准四阶段整理流程">2. 标准四阶段整理流程</h3>
+<p>Orient → Gather → Consolidate → Prune Index</p>
+<ul>
+<li>Orient：扫描所有长期记忆文件，看看现在一共有哪些知识；</li>
+<li>Gather：读取近期新增记忆，对比当前项目真实状态，识别过时内容；</li>
+<li>Consolidate
+<ul>
+<li>重复信息合并；</li>
+<li>把模糊的「下周三」这类相对日期强制转为绝对日期（2026-07-29）；</li>
+<li>互相冲突、已经失效的旧记忆直接删除，不是标记作废；</li>
+</ul>
+</li>
+<li>Prune Index：更新总索引文件 MEMORY.md，严格控制在 200 行 / 25KB 上限，清理冗余条目。</li>
+</ul>
+<h3 id="3-多进程锁机制-工程细节">3. 多进程锁机制（工程细节）</h3>
+<p>可能同时打开多个 Claude Code 窗口，防止多个进程同时启动「做梦整理」，造成文件读写冲突：</p>
+<ul>
+<li>使用锁文件，记录当前执行进程 PID；</li>
+<li>CAS 校验：防止争抢锁；</li>
+<li>如果整理中途异常崩溃，自动回滚锁文件时间戳，保证下次条件达标可以再次触发整理。</li>
+</ul>
 <h3 id="四阶段流程">四阶段流程</h3>
 <p>Orient → Gather → Consolidate → Prune Index、相对日期转绝对、直接删除矛盾过时记忆、<code>MEMORY.md</code> 裁剪约束。</p>
 <h3 id="多进程锁机制">多进程锁机制</h3>
