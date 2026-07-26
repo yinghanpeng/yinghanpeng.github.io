@@ -1,5 +1,23 @@
 [
   {
+    "title": "agent工程对于模型幻觉问题的思考",
+    "url": "/2026/07/26/agent-hallucination-engineering/",
+    "date": "2026-07-26",
+    "datetime": "2026-07-26T22:29:00+08:00",
+    "updated": "2026-07-26",
+    "updatedDatetime": "2026-07-26T22:29:00+08:00",
+    "summary": "模型幻觉不是单点问题，而是贯穿提示词、记忆、工具调用、RAG、上下文、Agent 决策轨迹与模型训练的全链路工程问题。",
+    "tags": [
+      "Agent",
+      "模型幻觉",
+      "RAG",
+      "工程实践"
+    ],
+    "minutes": 10,
+    "contentFormat": "markdown",
+    "contentFile": "content/posts/2026-07-26-agent-hallucination-engineering.md"
+  },
+  {
     "title": "claude code源码之记忆系统设计",
     "url": "/2026/07/22/claude-code-memory-system/",
     "date": "2026-07-22",
