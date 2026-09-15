@@ -1,5 +1,23 @@
 [
   {
+    "title": "FDE 的护城河，到底是什么？",
+    "url": "/2026/09/15/fde-moat/",
+    "date": "2026-09-15",
+    "datetime": "2026-09-15T22:26:00+08:00",
+    "updated": "2026-09-15",
+    "updatedDatetime": "2026-09-15T22:26:00+08:00",
+    "summary": "FDE 的护城河不是某一项静态能力，而是一套能够不断自我强化的商业循环：获取订单、理解业务、完成交付、沉淀复用资产。",
+    "tags": [
+      "转载阅读",
+      "FDE",
+      "企业AI",
+      "Agent"
+    ],
+    "minutes": 6,
+    "contentFormat": "markdown",
+    "contentFile": "content/posts/2026-09-15-fde-moat.md"
+  },
+  {
     "title": "agent工程对于模型幻觉问题的思考",
     "url": "/2026/07/26/agent-hallucination-engineering/",
     "date": "2026-07-26",
