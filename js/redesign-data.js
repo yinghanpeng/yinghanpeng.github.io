@@ -7,6 +7,20 @@ window.BLOG_DATA = {
   },
   "posts": [
     {
+      "title": "周四晚上",
+      "url": "/2026/09/15/thursday-night/",
+      "date": "2026-09-15",
+      "datetime": "2026-09-15T22:33:00+08:00",
+      "updated": "2026-09-15",
+      "updatedDatetime": "2026-09-15T22:33:00+08:00",
+      "summary": "面试中",
+      "tags": [
+        "随笔"
+      ],
+      "minutes": 1,
+      "contentHtml": "<p>面试中</p>"
+    },
+    {
       "title": "FDE 的护城河，到底是什么？",
       "url": "/2026/09/15/fde-moat/",
       "date": "2026-09-15",
