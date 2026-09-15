@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import { spawn } from 'node:child_process';
 import {
   copyFile,
@@ -297,6 +298,30 @@ async function repositoryStatus() {
   };
 }
 
+async function notifyFeishu(payload) {
+  const url = process.env.FEISHU_WEBHOOK_URL;
+  if (!url) return { skipped: true };
+  return new Promise((resolve) => {
+    const data = JSON.stringify({ msg_type: 'text', content: { text: String(payload || '') } });
+    const options = new URL(url);
+    const req = httpsRequest({
+      hostname: options.hostname,
+      path: options.pathname + options.search,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Length': Buffer.byteLength(data)
+      }
+    }, (res) => {
+      res.resume();
+      resolve({ ok: res.statusCode === 200, statusCode: res.statusCode });
+    });
+    req.on('error', (err) => resolve({ ok: false, error: err.message }));
+    req.write(data);
+    req.end();
+  });
+}
+
 async function publish(message) {
   const generated = await generateSite();
   await run('git', ['add', '-A']);
@@ -311,7 +336,9 @@ async function publish(message) {
     ['push', 'git@github.com:yinghanpeng/yinghanpeng.github.io.git', 'master'],
     { env: { GIT_SSH_COMMAND: 'ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new' } }
   );
-  return { generated, commit, push: push.stdout || push.stderr };
+  const pushOutput = push.stdout || push.stderr;
+  const feishu = await notifyFeishu(`博客发布完成\n\n提交信息：${String(message || '').trim() || 'Update blog posts'}\n推送结果：${pushOutput}`);
+  return { generated, commit, push: pushOutput, feishu };
 }
 
 async function serveFile(response, base, requestPath) {
