@@ -1,37 +1,5 @@
 [
   {
-    "title": "今天晚上",
-    "url": "/2026/09/17/tonight/",
-    "date": "2026-09-17",
-    "datetime": "2026-09-17T20:43:00+08:00",
-    "updated": "2026-09-17",
-    "updatedDatetime": "2026-09-17T20:43:00+08:00",
-    "summary": "月色好美",
-    "tags": [
-      "随笔"
-    ],
-    "minutes": 1,
-    "contentFormat": "markdown",
-    "contentFile": "content/posts/2026-09-17-tonight.md"
-  },
-  {
-    "title": "从会用AI，到能做企业落地：FDE企业AI转型实战营开放报名",
-    "url": "/2026/09/17/fde-training-camp/",
-    "date": "2026-09-17",
-    "datetime": "2026-09-17T19:28:00+08:00",
-    "updated": "2026-09-17",
-    "updatedDatetime": "2026-09-17T19:28:00+08:00",
-    "summary": "FDE前线推出「FDE企业AI实战训练营」：从AI大模型基础、Vibe Coding到知识库与智能体开发，2天1夜线上线下结合实战，讲师来自一线互联网企业与高校，优秀学员可获项目线索与交付参与机会。",
-    "tags": [
-      "FDE",
-      "AI",
-      "企业落地"
-    ],
-    "minutes": 5,
-    "contentFormat": "markdown",
-    "contentFile": "content/posts/2026-09-17-fde-training-camp.md"
-  },
-  {
     "title": "大模型进入行业，垂类公司还能靠什么赚钱？",
     "url": "/2026/09/17/ai-vertical-companies/",
     "date": "2026-09-17",

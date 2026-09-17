@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
-import { request as httpsRequest } from 'node:https';
 import { spawn } from 'node:child_process';
+import { notifyFeishu } from './notify-feishu.mjs';
 import {
   copyFile,
   mkdir,
@@ -296,30 +296,6 @@ async function repositoryStatus() {
     clean: lines.length <= 1,
     latest: latest.stdout
   };
-}
-
-async function notifyFeishu(payload) {
-  const url = process.env.FEISHU_WEBHOOK_URL;
-  if (!url) return { skipped: true };
-  return new Promise((resolve) => {
-    const data = JSON.stringify({ msg_type: 'text', content: { text: String(payload || '') } });
-    const options = new URL(url);
-    const req = httpsRequest({
-      hostname: options.hostname,
-      path: options.pathname + options.search,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Content-Length': Buffer.byteLength(data)
-      }
-    }, (res) => {
-      res.resume();
-      resolve({ ok: res.statusCode === 200, statusCode: res.statusCode });
-    });
-    req.on('error', (err) => resolve({ ok: false, error: err.message }));
-    req.write(data);
-    req.end();
-  });
 }
 
 async function publish(message) {
