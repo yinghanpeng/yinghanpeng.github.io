@@ -7,6 +7,20 @@ window.BLOG_DATA = {
   },
   "posts": [
     {
+      "title": "今天晚上",
+      "url": "/2026/09/17/tonight/",
+      "date": "2026-09-17",
+      "datetime": "2026-09-17T20:43:00+08:00",
+      "updated": "2026-09-17",
+      "updatedDatetime": "2026-09-17T20:43:00+08:00",
+      "summary": "月色好美",
+      "tags": [
+        "随笔"
+      ],
+      "minutes": 1,
+      "contentHtml": "<p>月色好美</p>"
+    },
+    {
       "title": "从会用AI，到能做企业落地：FDE企业AI转型实战营开放报名",
       "url": "/2026/09/17/fde-training-camp/",
       "date": "2026-09-17",
