@@ -1,5 +1,22 @@
 [
   {
+    "title": "大模型进入行业，垂类公司还能靠什么赚钱？",
+    "url": "/2026/09/17/ai-vertical-companies/",
+    "date": "2026-09-17",
+    "datetime": "2026-09-17T19:20:00+08:00",
+    "updated": "2026-09-17",
+    "updatedDatetime": "2026-09-17T19:20:00+08:00",
+    "summary": "OpenAI 发布金融服务版 ChatGPT，底层模型厂商开始直接争取行业客户。垂类公司还能靠什么赚钱？从工作质量、定价续费到交付成本，讨论垂类 AI 公司的出路。",
+    "tags": [
+      "AI",
+      "FDE",
+      "行业应用"
+    ],
+    "minutes": 12,
+    "contentFormat": "markdown",
+    "contentFile": "content/posts/2026-09-17-ai-vertical-companies.md"
+  },
+  {
     "title": "agent工程对于模型幻觉问题的思考",
     "url": "/2026/07/26/agent-hallucination-engineering/",
     "date": "2026-07-26",
