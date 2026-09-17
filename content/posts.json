@@ -1,37 +1,5 @@
 [
   {
-    "title": "20260917",
-    "url": "/2026/09/17/20260917/",
-    "date": "2026-09-17",
-    "datetime": "2026-09-17T19:12:00+08:00",
-    "updated": "2026-09-17",
-    "updatedDatetime": "2026-09-17T19:12:00+08:00",
-    "summary": "面试测试",
-    "tags": [
-      "随笔"
-    ],
-    "minutes": 1,
-    "contentFormat": "markdown",
-    "contentFile": "content/posts/2026-09-17-20260917.md"
-  },
-  {
-    "title": "AI进入组织之后，人和组织如何重新定义彼此？",
-    "url": "/2026/09/17/ai-org-redefine/",
-    "date": "2026-09-17",
-    "datetime": "2026-09-17T19:10:00+08:00",
-    "updated": "2026-09-17",
-    "updatedDatetime": "2026-09-17T19:10:00+08:00",
-    "summary": "把 AI 放进业务流程以后，一个人能做的事更多了，组织还应该用原来的方式理解他吗？从工作约定、个人价值、同事关系到组织安排，讨论 AI 进入组织后，人与组织如何重新定义彼此。",
-    "tags": [
-      "AI",
-      "FDE",
-      "组织"
-    ],
-    "minutes": 9,
-    "contentFormat": "markdown",
-    "contentFile": "content/posts/2026-09-17-ai-org-redefine.md"
-  },
-  {
     "title": "agent工程对于模型幻觉问题的思考",
     "url": "/2026/07/26/agent-hallucination-engineering/",
     "date": "2026-07-26",
