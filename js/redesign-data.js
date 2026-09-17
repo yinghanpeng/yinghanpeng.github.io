@@ -7,6 +7,20 @@ window.BLOG_DATA = {
   },
   "posts": [
     {
+      "title": "20260917",
+      "url": "/2026/09/17/20260917/",
+      "date": "2026-09-17",
+      "datetime": "2026-09-17T19:12:00+08:00",
+      "updated": "2026-09-17",
+      "updatedDatetime": "2026-09-17T19:12:00+08:00",
+      "summary": "面试测试",
+      "tags": [
+        "随笔"
+      ],
+      "minutes": 1,
+      "contentHtml": "<p>面试测试</p>"
+    },
+    {
       "title": "AI进入组织之后，人和组织如何重新定义彼此？",
       "url": "/2026/09/17/ai-org-redefine/",
       "date": "2026-09-17",
